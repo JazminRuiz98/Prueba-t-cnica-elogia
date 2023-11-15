@@ -1,27 +1,85 @@
 // md links y aquí se llaman las microfunciones
+// Cambia la importación de require a import()
+//import fetch from 'node-fetch'; // Importación dinámica
 
-const mdLinks = require('./lib/mdLinks.js');
-const fetchLink = require('./lib/app.js');
+const mdLinks = require('./lib/mdLinks.js')
+const fetchLink = require('./lib/app.js')
 // eslint-disable-next-line
 const colors = require('colors');
 // eslint-disable-next-line
 const { Table } = require('console-table-printer');
 
 
-mdLinks('examples/example1.md')
+//mdLinks('examples/example1.md')
+mdLinks('docs/01-milestone.md')
+//mdLinks('examples/example2.html')
   .then((links) => {
-    const linkPromises = links.map((link) => fetchLink(link));
-    return Promise.all(linkPromises);
+    const linkPromises = links.map((link) => fetchLink(link))
+    return Promise.all(linkPromises)
   })
   .then((linksWithStatus) => {
-    const table = new Table(); // Crea una nueva tabla
+    const table = new Table() // Crea una nueva tabla
 
     // Configura el formato de las columnas
-    table.addColumn({ name: 'Index', alignment: 'left', color: 'white', format: colors.white });
-    table.addColumn({ name: 'Texto', alignment: 'left', color: 'cyan', format: colors.cyan });
-    table.addColumn({ name: 'URL', alignment: 'left', color: 'magenta', format: colors.magenta });
-    table.addColumn({ name: 'Válido', alignment: 'left', color: 'green', format: colors.green });
-    table.addColumn({ name: 'Estado', alignment: 'left', color: 'yellow', format: colors.yellow });
+    /*table.addColumn({ name: 'Index', alignment: 'left', color: 'white', format: colors.white })
+    table.addColumn({ name: 'Texto', alignment: 'left', color: 'cyan', format: colors.cyan })
+    table.addColumn({ name: 'URL', alignment: 'left', color: 'magenta', format: colors.magenta })
+    table.addColumn({ name: 'Válido', alignment: 'left', color: 'green', format: colors.green })
+    table.addColumn({ name: 'Estado', alignment: 'left', color: 'yellow', format: colors.yellow })*/
+    
+
+    linksWithStatus.forEach((link, index) => {
+      const rowData = {
+        Index: index + 1,
+        Texto: link.text,
+        URL: link.href,
+        Válido: link.isValid ? 'True' : 'False',
+        Estado: link.status !== undefined ? `${link.status} ${link.statusText}` : '404 Not Found',
+      }
+
+      if (!link.href){
+        rowData.Estado = 'N/A'
+      }
+
+      // if (link.status === 404) {
+      //   rowData.Estado = '404 Not Found';
+      // } else if (!link.href) {
+      //   rowData.Estado = 'N/A';
+      // } else {
+      //   rowData.Estado = link.status !== undefined ? `${link.status} ${link.statusText}` : 'N/A';
+      // }
+      table.addRow(rowData) // Agrega una fila a la tabla
+    })
+
+    table.printTable() // Imprime la tabla
+  })
+  .catch((error) => {
+    console.error(error)
+  })
+
+
+/*const mdLinks = require('./lib/mdLinks.js')
+const fetchLink = require('./lib/app.js')
+// eslint-disable-next-line
+const colors = require('colors')
+// eslint-disable-next-line
+const { Table } = require('console-table-printer')
+
+
+mdLinks('examples/example1.md')
+  .then((links) => {
+    const linkPromises = links.map((link) => fetchLink(link))
+    return Promise.all(linkPromises)
+  })
+  .then((linksWithStatus) => {
+    const table = new Table() // Crea una nueva tabla
+
+    // Configura el formato de las columnas
+    table.addColumn({ name: 'Index', alignment: 'left', color: 'white', format: colors.white })
+    table.addColumn({ name: 'Texto', alignment: 'left', color: 'cyan', format: colors.cyan })
+    table.addColumn({ name: 'URL', alignment: 'left', color: 'magenta', format: colors.magenta })
+    table.addColumn({ name: 'Válido', alignment: 'left', color: 'green', format: colors.green })
+    table.addColumn({ name: 'Estado', alignment: 'left', color: 'yellow', format: colors.yellow })
     
 
     linksWithStatus.forEach((link, index) => {
@@ -31,16 +89,16 @@ mdLinks('examples/example1.md')
         URL: link.href,
         Válido: link.isValid ? 'True' : 'False',
         Estado: link.status ? `${link.status} ${link.statusText}` : 'N/A',
-      };
+      }
 
-      table.addRow(rowData); // Agrega una fila a la tabla
-    });
+      table.addRow(rowData) // Agrega una fila a la tabla
+    })
 
-    table.printTable(); // Imprime la tabla
+    table.printTable() // Imprime la tabla
   })
   .catch((error) => {
-    console.error(error);
-  });
+    console.error(error)
+  })*/
 /*const { validatePath,
     convertAbsolutePath,
     fileExist,
