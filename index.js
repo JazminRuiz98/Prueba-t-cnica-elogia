@@ -2,61 +2,30 @@
 // Cambia la importación de require a import()
 //import fetch from 'node-fetch'; // Importación dinámica
 
-const mdLinks = require('./lib/mdLinks.js')
-const fetchLink = require('./lib/app.js')
-// eslint-disable-next-line
-const colors = require('colors');
-// eslint-disable-next-line
-const { Table } = require('console-table-printer');
+const mdLinks = require('./lib/mdLinks')// Importa la función mdLinks desde el archivo mdLinks.js
+const filePath = './examples/example1.md' 
+//const filePath = './examples/example2.html'
+const validate = true // o false, dependiendo del caso
+const path = require('path')
+const allowedExtensions = ['.md', '.mkd', '.mdwn', '.mdown', '.mdtxt', '.mdtext', '.markdown', '.text']
+const fileExtension = path.extname(filePath)
 
-
-//mdLinks('examples/example1.md')
-mdLinks('docs/01-milestone.md')
-//mdLinks('examples/example2.html')
-  .then((links) => {
-    const linkPromises = links.map((link) => fetchLink(link))
-    return Promise.all(linkPromises)
-  })
-  .then((linksWithStatus) => {
-    const table = new Table() // Crea una nueva tabla
-
-    // Configura el formato de las columnas
-    /*table.addColumn({ name: 'Index', alignment: 'left', color: 'white', format: colors.white })
-    table.addColumn({ name: 'Texto', alignment: 'left', color: 'cyan', format: colors.cyan })
-    table.addColumn({ name: 'URL', alignment: 'left', color: 'magenta', format: colors.magenta })
-    table.addColumn({ name: 'Válido', alignment: 'left', color: 'green', format: colors.green })
-    table.addColumn({ name: 'Estado', alignment: 'left', color: 'yellow', format: colors.yellow })*/
-    
-
-    linksWithStatus.forEach((link, index) => {
-      const rowData = {
-        Index: index + 1,
-        Texto: link.text,
-        URL: link.href,
-        Válido: link.isValid ? 'True' : 'False',
-        Estado: link.status !== undefined ? `${link.status} ${link.statusText}` : '404 Not Found',
-      }
-
-      if (!link.href){
-        rowData.Estado = 'N/A'
-      }
-
-      // if (link.status === 404) {
-      //   rowData.Estado = '404 Not Found';
-      // } else if (!link.href) {
-      //   rowData.Estado = 'N/A';
-      // } else {
-      //   rowData.Estado = link.status !== undefined ? `${link.status} ${link.statusText}` : 'N/A';
-      // }
-      table.addRow(rowData) // Agrega una fila a la tabla
+if (!allowedExtensions.includes(fileExtension)) {
+  console.error(`Error: Extensión no permitida. Las extensiones permitidas son: ${allowedExtensions.join(', ')}`)
+} else {
+  mdLinks(filePath, validate)
+    .then(links => {
+      console.log(links)
     })
+    .catch(console.error)
+}
 
-    table.printTable() // Imprime la tabla
+mdLinks(filePath, validate) // Llama a la función mdLinks con la ruta del archivo como argumento
+  .then(links => {
+    // Haces algo con los links si la promesa se resuelve exitosamente
+    console.log(links)
   })
-  .catch((error) => {
-    console.error(error)
-  })
-
+  .catch(console.error)
 
 /*const mdLinks = require('./lib/mdLinks.js')
 const fetchLink = require('./lib/app.js')
