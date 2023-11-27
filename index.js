@@ -3,10 +3,11 @@
 //import fetch from 'node-fetch'; // Importación dinámica
 
 const mdLinks = require('./lib/mdLinks')// Importa la función mdLinks desde el archivo mdLinks.js
+const path = require('path')
+
 const filePath = './examples/example1.md' 
 //const filePath = './examples/example2.html'
 const validate = true // o false, dependiendo del caso
-const path = require('path')
 const allowedExtensions = ['.md', '.mkd', '.mdwn', '.mdown', '.mdtxt', '.mdtext', '.markdown', '.text']
 const fileExtension = path.extname(filePath)
 
@@ -15,9 +16,12 @@ if (!allowedExtensions.includes(fileExtension)) {
 } else {
   mdLinks(filePath, validate)
     .then(links => {
-      console.log(links)
+      console.log('Links obtenidos:', links)
+      //console.log(links)
     })
-    .catch(console.error)
+    .catch(error => {
+      console.error('Error al obtener los links:', error)
+    })
 }
 
 mdLinks(filePath, validate) // Llama a la función mdLinks con la ruta del archivo como argumento
