@@ -1,19 +1,12 @@
-{
-  "env": {
-    "node": true
-  },
-  "parserOptions": {
-    "ecmaVersion": 8
-  }
-}
-/*module.exports = {
+module.exports = {
   'env': {
+    'browser': true,
     'commonjs': true,
     'es2021': true,
     'node': true
   },
   'extends': 'eslint:recommended',
-  'overrides': [
+  /*'overrides': [
     {
       'env': {
         'node': true
@@ -25,9 +18,9 @@
         'sourceType': 'script'
       }
     }
-  ],
+  ],*/
   'parserOptions': {
-    'ecmaVersion': '8'
+    'ecmaVersion': 'latest'
   },
   'rules': {
     'indent': [
@@ -44,7 +37,7 @@
     ],
     'semi': [
       'error',
-      'always'
+      'never'
     ]
   }
-};*/
+}
